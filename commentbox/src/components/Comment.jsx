@@ -1,5 +1,5 @@
-import React from 'react'
-
+import React, { useState } from 'react'
+import {CommentList} from '../Comments';
 const Comment = ({comment,  depth = 0,                // indentation level for nested comments
   selectedId = null,        // id of currently selected comment (for styling)
   onSelect = () => {},      // called when whole comment is clicked
@@ -10,14 +10,18 @@ const Comment = ({comment,  depth = 0,                // indentation level for n
 
   const isSelected = selectedId === comment.id;
   const indentPx = depth * 16; // 16px per depth level (tweak as you like)
+  const [expanded, setExpanded] = useState(false);
+  const handleClick = e => {
+    e.stopPropagation();
+    setExpanded(prev =>(!prev));};
 
   return (
     <div
-      onClick={() => onSelect(comment.id)}
+      onClick={handleClick}
       style={{ marginLeft: indentPx }}
-      className={`group cursor-pointer p-4 rounded-2xl transition-transform transform
-                  hover:-translate-y-0.5 will-change-transform
-                  border border-transparent shadow-md
+      className={`group cursor-pointer  bg-gray-50 p-4 rounded-2xl transition-transform transform
+                  hover:-translate-y-0.5 will-change-transform bg-gray-100
+                  border border-l-5 border-gray-200 shadow-md
                   ${isSelected ? "ring-2 ring-indigo-400 bg-white" : "bg-white/90"}
                   backdrop-blur-sm`}
     >
@@ -80,7 +84,11 @@ const Comment = ({comment,  depth = 0,                // indentation level for n
           </div>
         </div>
       </div>
+          {expanded && comment.children.length >0 && (
+      <CommentList nodes = {comment.children}/>
+    )}
     </div>
+
   );
 }
 
