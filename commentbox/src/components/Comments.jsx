@@ -1,7 +1,8 @@
 import { useMemo, Children, useEffect, useRef, useState } from 'react'
+import { motion, AnimatePresence } from "framer-motion";
 
-import Comment from './components/Comment';
-import data from './assets/data.json'
+import Comment from './Comment';
+import data from '../assets/data.json'
 for (let i = 0; i < data.length; i++) {
   data[i].likes = 1;
   data[i].liked = false;
@@ -66,51 +67,7 @@ function Comments() {
   let [likes, setLikes] = useState(
     Object.fromEntries(data_.map(item => [item.id, item.likes]))
   );
-
- 
-  const [upvotes, setUpvotes] = useState(Object.fromEntries(data_.map(item => [item.id, item.clicked])));
-  const onClick = (id) => {
-
-  }
-
-  
-  const [clicked, setClicked] = useState(Object.fromEntries(data_.map(item => [item.id, item.clicked])))
-  return (
-    <>
-      
-      <div className="grid-rows-3 gap-4 ">
-        {
-          //mapping
-          // data_.filter(comment => comment.parent_id == null).map(
-          //   comment => (
-          //     <div key={comment.id} className="">
-          //       <span className='border border-white '>
-          //     <Comment key = {comment.id} comment={comment} onUpvote={onUpvote} onLike={onLike} />
-          //       </span>
-          //     <div className="ml-6 border-l-2 border-gray-300 pl-3 grid grid-rows-1 gap-2">
-
-          //     {data_.filter(subcomment => subcomment.parent_id == comment.id).map(
-          //       subcomment =>(
-          //         <Comment key={subcomment.id} comment={subcomment} onLike={onLike} onUpvote={onUpvote}/>
-          //       ))
-          //       // one more thing left actually, now for comments under comments under commetns they also ahve to be mapped correctly
-          //       }
-          //     </div>
-          //   </div>
-          //   )
-          // )
-        }
-        <CommentList nodes={data_tree} />
-
-
-      
-      </div>
-
-    </>
-  )
-}
-
-export function onLike(id){
+  const onLike = (id) => {
     setLikes(
       prev => {
         const newLikes = {
@@ -138,7 +95,10 @@ export function onLike(id){
   }
 
 
-export function onUpvote(id){
+
+  const [upvotes, setUpvotes] = useState(Object.fromEntries(data_.map(item => [item.id, item.clicked])));
+
+  const onUpvote = (id) => {
     setUpvotes((prev) => {
       const newUpvotes = {
         ...prev,
@@ -158,22 +118,86 @@ export function onUpvote(id){
   };
 
 
-export function CommentList ({ nodes }){
-    return (
-      <div>
-        {
-          nodes.map(
-            node => (
-              <div key={node.id} className="pb-5">
-                <span className=''>
-                  <Comment key={node.id} comment={node} onUpvote={onUpvote} onLike={onLike} />
-                </span>
-              </div>
-            )
-          )
-        }
-      </div>);
+  const onClick = (id) => {
 
   }
+
+
+  const [clicked, setClicked] = useState(Object.fromEntries(data_.map(item => [item.id, item.clicked])))
+  return (
+    <>
+
+      <div className="grid-rows-3 gap-4">
+        {
+          //mapping
+          // data_.filter(comment => comment.parent_id == null).map(
+          //   comment => (
+          //     <div key={comment.id} className="">
+          //       <span className='border border-white '>
+          //     <Comment key = {comment.id} comment={comment} onUpvote={onUpvote} onLike={onLike} />
+          //       </span>
+          //     <div className="ml-6 border-l-2 border-gray-300 pl-3 grid grid-rows-1 gap-2">
+
+          //     {data_.filter(subcomment => subcomment.parent_id == comment.id).map(
+          //       subcomment =>(
+          //         <Comment key={subcomment.id} comment={subcomment} onLike={onLike} onUpvote={onUpvote}/>
+          //       ))
+          //       // one more thing left actually, now for comments under comments under commetns they also ahve to be mapped correctly
+          //       }
+          //     </div>
+          //   </div>
+          //   )
+          // )
+        }
+        <CommentList nodes={data_tree} expanded={true} onLike={onLike} onUpvote={onUpvote} />
+
+
+
+      </div>
+
+    </>
+  )
+}
+
+
+export function CommentList({ nodes, expanded, onLike, onUpvote }) {
+
+
+  expanded = (expanded === undefined || expanded === false) ? false : true
+  console.log(expanded)
+  const [height, setHeight] = useState(0);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      setHeight(ref.current.scrollHeight);
+    }
+  }, [nodes, expanded]);
+
+  return (
+    <div>
+
+      {
+        nodes.map(
+          node => (
+            <div ref={ref} key={node.id}
+              className={`pb-1 transition-all duration-300 ease-in-out overflow-hidden `}
+            //               style={{
+            //   maxHeight: expanded ? `${height}px` : "0px",
+            //   opacity: expanded ? 1 : 0,
+            // }}
+
+            >
+              <span className=""
+              >
+                <Comment key={node.id} comment={node} onUpvote={onUpvote} onLike={onLike} />
+              </span>
+            </div>
+          )
+        )
+      }
+    </div>);
+
+}
 
 export default Comments

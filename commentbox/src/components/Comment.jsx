@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
-import {CommentList} from '../Comments';
+import {CommentList} from './Comments';
+import {motion, AnimatePresence} from "framer-motion";
+
+
 const Comment = ({comment,  depth = 0,                // indentation level for nested comments
   selectedId = null,        // id of currently selected comment (for styling)
   onSelect = () => {},      // called when whole comment is clicked
@@ -16,10 +19,14 @@ const Comment = ({comment,  depth = 0,                // indentation level for n
     setExpanded(prev =>(!prev));};
 
   return (
+    <motion.div 
+    layout transition={{duration :0.4, ease:"easeInOut"}}
+    className='pb-3'
+    >
     <div
       onClick={handleClick}
       style={{ marginLeft: indentPx }}
-      className={`group cursor-pointer  bg-gray-50 p-4 rounded-2xl transition-transform transform
+      className={`transition-all duration-7000 ease-in-out overflow-hidden group cursor-pointer  bg-gray-50 p-4 rounded-2xl transition-transform transform
                   hover:-translate-y-0.5 will-change-transform bg-gray-100
                   border border-l-5 border-gray-200 shadow-md
                   ${isSelected ? "ring-2 ring-indigo-400 bg-white" : "bg-white/90"}
@@ -64,6 +71,13 @@ const Comment = ({comment,  depth = 0,                // indentation level for n
             >
               Reply
             </button>
+                        <button
+              onClick={() => { handleClick }}
+              className="text-xs font-medium -600 "
+            >
+              Replies({comment.children.length})
+            </button>
+            
 
             <button
               onClick={(e) => { e.stopPropagation(); onLike(comment.id); }}
@@ -84,10 +98,21 @@ const Comment = ({comment,  depth = 0,                // indentation level for n
           </div>
         </div>
       </div>
-          {expanded && comment.children.length >0 && (
-      <CommentList nodes = {comment.children}/>
+      <AnimatePresence>
+          {expanded &&  comment.children.length >0 && (
+            <motion.div
+            layout
+            initial={{opacity:0,height:0}}
+            animate={{opacity:1,height:"auto"}}
+            exit={{opacity:0,height:0}}
+            transition={{duration:0.4,ease:"easeInOut"}}
+            >
+      <CommentList nodes = {comment.children} expanded={expanded} onLike={onLike} onUpvote={onUpvote}/>
+            </motion.div>
     )}
+    </AnimatePresence>
     </div>
+    </motion.div>
 
   );
 }
