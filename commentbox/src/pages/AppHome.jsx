@@ -84,7 +84,7 @@ function AppHome() {
                     {/* Post Header */}
                     <div className="p-5 flex items-center gap-3">
                         <img
-                            src={data.avatar}
+                            src={data.avatar || `https://api.dicebear.com/6.x/identicon/svg?seed=001`}
                             alt="User"
                             className="w-10 h-10 rounded-full border"
                         />
