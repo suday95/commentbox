@@ -97,7 +97,7 @@ function AppHome() {
                     {/* Post Image */}
                     <div className="w-full">
                         <img
-                            src="./src/assets/img1.jpg"
+                            src="https://drive.google.com/file/d/1el-1lOgqOQ0a7bztlw2EJQ1kp3EoNEUb/view?usp=drive_link"
                             alt="Post"
                             className="w-full h-auto object-cover"
                         />
