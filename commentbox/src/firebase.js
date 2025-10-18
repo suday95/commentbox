@@ -8,22 +8,16 @@ import {getFirestore} from "firebase/firestore";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const env = import.meta.env;
+
 const firebaseConfig = {
-
-    apiKey: "AIzaSyCPnIYryp_c4rCldViuebaXiu7DI6P0_Uk",
-
-    authDomain: "comment-box-84089.firebaseapp.com",
-
-    projectId: "comment-box-84089",
-
-    storageBucket: "comment-box-84089.firebasestorage.app",
-
-    messagingSenderId: "425901584925",
-
-    appId: "1:425901584925:web:9a71288c78ca9ca23e4cf4",
-
-    measurementId: "G-VG2ZLPMNH7"
-
+  apiKey: env.VITE_FIREBASE_API_KEY,
+  authDomain: env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: env.VITE_FIREBASE_APP_ID,
+  measurementId: env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 

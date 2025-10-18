@@ -3,12 +3,12 @@ import {CommentList} from './Comments';
 import {motion, AnimatePresence} from "framer-motion";
 
 
-const Comment = ({comment,  depth = 0,                // indentation level for nested comments
+const Comment = ({user_data,user_id, comment,  depth = 0,                // indentation level for nested comments
   selectedId = null,        // id of currently selected comment (for styling)
   onSelect = () => {},      // called when whole comment is clicked
   onReply = () => {},
-  onUpvote =()=>{},       // called when reply is clicked
-  onLike = () => {}, }) => {
+  onUpvote =(id_value)=>{},       // called when reply is clicked
+  onLike = (id_value) => {}, }) => {
        // called when like is clicked
 
   const isSelected = selectedId === comment.id;
@@ -17,6 +17,11 @@ const Comment = ({comment,  depth = 0,                // indentation level for n
   const handleClick = e => {
     e.stopPropagation();
     setExpanded(prev =>(!prev));};
+      const cleanUser = {
+    name: user_data?.name || "Anonymous",
+    avatar: user_data?.avatar || null, // or use a placeholder URL if preferred
+    created_at: user_data?.created_at || null,
+  };
 
   return (
     <motion.div 
@@ -35,8 +40,8 @@ const Comment = ({comment,  depth = 0,                // indentation level for n
       <div className="flex items-start gap-4">
         {/* Avatar */}
         <img
-          src={comment.avatar || `https://api.dicebear.com/6.x/identicon/svg?seed=${comment.id}`}
-          alt={`${comment.user_name}-avatar`}
+          src={cleanUser.avatar || `https://api.dicebear.com/6.x/identicon/svg?seed=${comment.id}`}
+          alt={`${cleanUser.name}-avatar`}
           className="w-10 h-10 rounded-full ring-1 ring-gray-200 flex-shrink-0"
         />
 
@@ -45,7 +50,7 @@ const Comment = ({comment,  depth = 0,                // indentation level for n
           <div className="flex items-baseline justify-between gap-3">
             <div className="truncate">
               <div className="flex items-center gap-2">
-                <h4 className="text-sm font-semibold text-gray-900 truncate">{comment.user_name}</h4>
+                <h4 className="text-sm font-semibold text-gray-900 truncate">{cleanUser.name}</h4>
                 <span className="text-xs text-gray-400">{comment.time}</span>
               </div>
               {/* <div className="text-xs text-gray-500 truncate">{comment.meta}</div> */}
@@ -53,7 +58,7 @@ const Comment = ({comment,  depth = 0,                // indentation level for n
 
             {/* subtle actions shown on hover */}
             <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-gray-400 flex gap-3">
-              {console.log(comment.likes)}
+              
               <span>{comment.likes ?? 0} ♥</span>
               <span>{comment.upvotes ?? 0} ♥</span>
               <span>⋯</span>
@@ -80,14 +85,14 @@ const Comment = ({comment,  depth = 0,                // indentation level for n
             
 
             <button
-              onClick={(e) => { e.stopPropagation(); onLike(comment.id); }}
+              onClick={(e) => { e.stopPropagation(); onLike(user_id); }}
               className="text-xs text-gray-500 hover:text-red-500"
               aria-pressed={comment.liked ? true : false}
             >
               {comment.liked ? "Liked" : "Like"}
             </button>
                       <button
-              onClick={(e) => { e.stopPropagation(); onUpvote(comment.id); }}
+              onClick={(e) => { e.stopPropagation(); onUpvote(user_id); }}
               className="text-xs text-gray-500 hover:text-blue-800"
               aria-pressed={comment.upvoted ? true : false}
             >

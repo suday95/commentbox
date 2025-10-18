@@ -4,19 +4,28 @@ import { auth } from "../firebase";
 import { Link, Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
+
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
+  const handlesignup =()=>{
+    navigate("/signup")
+  }
   const handleSignIn = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log("Signed in:", userCredential.user);
-        let navigate = useNavigate();
-        navigate("/page");
+      if(userCredential.user){
+      alert("Signed in:", userCredential.user);
+        navigate("/");
+    }
+    else{
+        alert("sign in failed, retry...")
+    }
 
     } catch (err) {
-      console.error(err.message);
+      alert(err.message);
     }
   };
 
@@ -44,7 +53,14 @@ export default function SignIn() {
         >
           Sign In
         </button>
+        <button
+        onClick={handlesignup}
+        className="pt-1 hover:text-blue-800 underline"
+        >
+            Don't Have an account, Don't worry create here
+        </button>
       </div>
+      
     </div>
   );
 }

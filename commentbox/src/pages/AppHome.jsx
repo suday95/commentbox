@@ -1,6 +1,81 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useState } from 'react';
 import Comments from '../components/Comments';
+import { AuthCredential } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth ,db} from '../firebase';
+import { useNavigate } from 'react-router-dom';
+import {doc,getDoc} from 'firebase/firestore';
+
+// async function getUserData() {
+//   const user = auth.currentUser; // Logged-in user
+
+//   if (!user) {
+//     console.log("No user logged in");
+//     return null;
+//   }
+
+//   // Fetch Firestore document using UID
+//   const docRef = doc(db, "users", user.uid);
+//   const docSnap = await getDoc(docRef);
+
+//   if (docSnap.exists()) {
+//     const userData = docSnap.data();
+//     console.log("User data from Firestore:", userData);
+//     return userData;
+//   } else {
+//     console.log("No Firestore document found for this user");
+//     return null;
+//   }
+// }
+
+
+
 function AppHome() {
+   const [data, setData] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = auth.currentUser;
+
+    if (!user) {
+      alert("You are not signed in");
+      navigate("/signin");
+      return; // stop further execution
+    }
+
+    // Fetch Firestore data for logged-in user
+    async function fetchUserData() {
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        setData(docSnap.data());
+        console.log("User Name:", docSnap.data().name);
+      } else {
+        console.log("No Firestore document found for this user");
+      }
+    }
+
+    fetchUserData();
+  }, [navigate]);
+
+  if (!data) return <p>Loading user data...</p>;
+
+    // useEffect(
+    //     ()=>{ const unsubscribe = onAuthStateChanged(auth, (currentuser)=> {
+    //         if(currentuser){
+    //             setUser(currentuser);
+    //             alert("user_detatils:", currentuser.name);
+    //         }
+    //         else{
+    //             alert("you are not signed in,");
+    //             navigate("/signin");
+    //         }
+    //     });
+    //     return () => unsubscribe();
+    //     },[]
+    // );
     return (
         <>
             <div className="container mx-auto px-4 sm:px-6 md:px-20 lg:px-50 py-10 max-w-full animate-gradient">
@@ -9,12 +84,12 @@ function AppHome() {
                     {/* Post Header */}
                     <div className="p-5 flex items-center gap-3">
                         <img
-                            src="https://api.dicebear.com/6.x/identicon/svg?seed=159"
+                            src={data.avatar}
                             alt="User"
                             className="w-10 h-10 rounded-full border"
                         />
                         <div>
-                            <h2 className="font-semibold text-gray-800">Suday Samala</h2>
+                            <h2 className="font-semibold text-gray-800">{data.name}</h2>
                             <p className="text-sm text-gray-500">2 hours ago</p>
                         </div>
                     </div>
