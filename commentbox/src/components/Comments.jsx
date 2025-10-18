@@ -114,46 +114,46 @@ async function getUserDataById(idValue) {
 
 
 
-async function uploadComments(users) {
-  if (!users || users.length === 0) {
-    console.error("⚠️ No users found to upload.");
-    return;
-  }
+// async function uploadComments(users) {
+//   if (!users || users.length === 0) {
+//     console.error("⚠️ No users found to upload.");
+//     return;
+//   }
 
-  const usersCollection = collection(db, "comments");
+//   const usersCollection = collection(db, "comments");
 
-  try {
-    await Promise.all(
-      users.map(async (user) => {
-        if (!user.user_id) {
-          console.warn("⚠️ Skipping user without id:", user);
-          return;
-        }
+//   try {
+//     await Promise.all(
+//       users.map(async (user) => {
+//         if (!user.user_id) {
+//           console.warn("⚠️ Skipping user without id:", user);
+//           return;
+//         }
 
-        // 🔍 Check if a user with the same ID already exists
-        const q = query(usersCollection, where("id", "==", user.user_id));
-        const existingDocs = await getDocs(q);
+//         // 🔍 Check if a user with the same ID already exists
+//         const q = query(usersCollection, where("id", "==", user.user_id));
+//         const existingDocs = await getDocs(q);
 
-        if (!existingDocs.empty) {
-          console.log(`⏭️ User already exists: ${user.id} (${user.user_id})`);
-          return; // skip adding duplicate
-        }
+//         if (!existingDocs.empty) {
+//           console.log(`⏭️ User already exists: ${user.id} (${user.user_id})`);
+//           return; // skip adding duplicate
+//         }
 
-        // ✅ Add if not found
-        await addDoc(usersCollection, {
-          ...user,
-          created_at: user.created_at || new Date().toISOString(),
-        });
+//         // ✅ Add if not found
+//         await addDoc(usersCollection, {
+//           ...user,
+//           created_at: user.created_at || new Date().toISOString(),
+//         });
 
-        console.log(`✅ Added user: ${user.id}`);
-      })
-    );
+//         console.log(`✅ Added user: ${user.id}`);
+//       })
+//     );
 
-    console.log("🚀 Upload complete!");
-  } catch (error) {
-    console.error("❌ Error uploading users:", error);
-  }
-}
+//     console.log("🚀 Upload complete!");
+//   } catch (error) {
+//     console.error("❌ Error uploading users:", error);
+//   }
+// }
 // async function exportComments() {
 //   const commentsRef = collection(db, "comments");
 //   const snapshot = await getDocs(commentsRef);
