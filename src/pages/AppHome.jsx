@@ -77,7 +77,7 @@ function AppHome() {
       onClick={handleLogout}
       className="px-4 py-2 bg-red-500 justify-right text-white rounded hover:bg-red-600 transition"
     >
-      Logout
+      Logout_
     </button>
                     </div>
 
